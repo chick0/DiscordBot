@@ -18,7 +18,19 @@ reload:
 Reloads the modules. This command has a permission value of 1.
 """
 
-NUMBTOPERM = ['0(disabled)', '1(botowner)', '2(svowner)', '3(svmod)', '4(svsudoer)', '5(public)', '6(filter)', '7_RESERVED', '8_RESERVED', '9(blacklisted)']
+NUMBTOPERM = [
+	'0(disabled)',
+	'1(botowner)',
+	'2(svowner)',
+	'3(svmod)',
+	'4(svsudoer)',
+	'5(public)',
+	'6(filter)',
+	'7_RESERVED',
+	'8_RESERVED',
+	'9(blacklisted)'
+]
+
 
 async def main(message, **kwargs):
 	sv_perm = kwargs['sv_perm']

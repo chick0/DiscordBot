@@ -8,6 +8,7 @@ import configparser
 from bot_func import Bot
 from perm import perm_cmd
 
+
 def import_module():
     """
     This function checks modules folder by default, and load every single module
@@ -40,6 +41,7 @@ def import_module():
                     commands.append(module_name)
                 log = f"Succesfully Loaded {module_name}."
             logging.info(log)
+
 
 # Get path based on the script's location.
 PATH = os.path.dirname(os.path.abspath(__file__))
@@ -116,6 +118,7 @@ import_module()
 
 client = discord.Client()
 
+
 # Aight, here goes handlers
 
 @client.event
@@ -124,7 +127,8 @@ async def on_ready():
     # second
     logger.info('Succesfully logged in as {0.user}!'.format(client))
     activity = discord.Game("Use ?prefix to get prefix")
-    await client.change_presence(activity = activity)
+    await client.change_presence(activity=activity)
+
 
 @client.event
 async def on_message(message):
@@ -160,7 +164,7 @@ async def on_message(message):
                 message.author
             )
             await Bot.send_msg(message.channel, embed)
-    
+
         elif message.content == "?reset_prefix" and perm <= 3:
             # Reset the prefix to !. only svmod user can use this.
             logging.info(
@@ -174,15 +178,15 @@ async def on_message(message):
                 message.author
             )
             await Bot.send_msg(message.channel, embed)
-    
+
         elif message.content.startswith(prefix):
             # Get a command and run it if it's a thing
             fullcmd = message.content.replace(prefix, "", 1)
             cmd = fullcmd.split()[0]
             logging.info(
-    f"{str(message.author)} used the command {cmd}. message: {message.content}"
+                f"{str(message.author)} used the command {cmd}. message: {message.content}"
             )
-            
+
             if cmd == "set_prefix" and perm <= 3:
                 cmdsplit = fullcmd.split()
                 if len(cmdsplit) != 2:
@@ -213,7 +217,7 @@ async def on_message(message):
                     message.author
                 )
                 await Bot.edit_msg(msg, embed)
-            
+
             elif cmd == "perm":
                 rtnvalue, new_sv_perm = await perm_cmd(
                     fullcmd.split(), message, sv_perm, modules, commands)
@@ -224,7 +228,7 @@ async def on_message(message):
                     message.author
                 )
                 await Bot.send_msg(message.channel, embed)
-            
+
             elif cmd in commands:
                 # Get the module's permission, If user's permission is higher
                 # than the command, execute it
@@ -241,12 +245,12 @@ async def on_message(message):
                     )
                     msggen = module.main(
                         message,
-                        client = client,
-                        statics = STATICS,
-                        sv_perm = sv_perm,
-                        sv_prefix = sv_prefix,
-                        modules = modules,
-                        bot_func = Bot
+                        client=client,
+                        statics=STATICS,
+                        sv_perm=sv_perm,
+                        sv_prefix=sv_prefix,
+                        modules=modules,
+                        bot_func=Bot
                     )
                     msg = None
                     async for rtnvalue in msggen:
@@ -288,11 +292,11 @@ async def on_message(message):
                 elif module_perm != 0:
                     # You don't have permission? Fuck off.
                     embed = await Bot.get_embed(
-                        "Permission Error", 
+                        "Permission Error",
                         "You don't have permission to use this command.",
                         message.author,
-                        no_capitalize = True,
-                        colour = 0xff0000)
+                        no_capitalize=True,
+                        colour=0xff0000)
                     await Bot.send_msg(message.channel, embed)
 
     for module_name in filters:
@@ -303,6 +307,7 @@ async def on_message(message):
         content = await modules[module_name].main(message)
         if content:
             await Bot.send_msg(message.channel, content)
+
 
 @client.event
 async def on_error(event, *args, **kwargs):
@@ -323,10 +328,10 @@ async def on_error(event, *args, **kwargs):
         tb = traceback.format_exc()
         logger.error(tb)
         embed = await Bot.get_embed(
-            title = "An error has been occured while running the task.",
-            desc = f"```{tbtxt}```",
-            colour = 0xff0000,
-            sender = message.author
+            title="An error has been occured while running the task.",
+            desc=f"```{tbtxt}```",
+            colour=0xff0000,
+            sender=message.author
         )
         await Bot.send_msg(message.channel, embed)
     else:

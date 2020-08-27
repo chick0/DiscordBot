@@ -12,6 +12,7 @@ Usage: google [QUERY TO SEARCH]
 #이름 = soup.find("body").find("div", {"id":"main"}).find_all("div", {"class":["ZINbbc", "xpd", "09g5cc", "uUPGi"]})[x].find("div", {"class":["BNeawe", "vvjwJb", "AP7Wnd"]}).text
 #URL = soup.find("body").find("div", {"id":"main"}).find_all("div", {"class":["ZINbbc", "xpd", "09g5cc", "uUPGi"]})[x].find("a")['href'].replace("/url?q=")
 
+
 async def main(message, **kwargs):
     loop = kwargs['client'].loop
     cmd = message.content.split()

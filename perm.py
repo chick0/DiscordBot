@@ -15,23 +15,35 @@ This command will manage the permission of command/user in this server. There's 
 * 9. blacklisted - This is only for users.
 Only svmod or higher permissions can set the permission, and you can't change the permission if the target already has a higher permission than you or the permission you're trying to set is higher than you.
 You can change the permisison of the command that has the same/lower permission, but you can't change the permission of the user who has the same permission with you.
-```""" 
+```"""
 
-NUMBTOPERM = ['0(disabled)', '1(botowner)', '2(svowner)', '3(svmod)', '4(svsudoer)', '5(public)', '6(filter)', '7_RESERVED', '8_RESERVED', '9(blacklisted)']
+NUMBTOPERM = [
+    '0(disabled)',
+    '1(botowner)',
+    '2(svowner)',
+    '3(svmod)',
+    '4(svsudoer)',
+    '5(public)',
+    '6(filter)',
+    '7_RESERVED',
+    '8_RESERVED',
+    '9(blacklisted)'
+]
+
 
 async def perm_cmd(cmd, message, sv_perm, modules, commands):
     """
     Get user list/command list from the message, change its permission.
     """
     if cmd[1] == "set":
-        
+
         perm = await Bot.get_user_perm(message.author, message.guild, sv_perm)
         if not perm <= 3:
             raise PermissionError("You don't have permission to use this command.")
         if cmd[2] == "user":
             # This will check if user's permission is higher than the one he
             # gave.
-            if perm >= int(cmd[-1]): 
+            if perm >= int(cmd[-1]):
                 raise PermissionError("You can't set permission higher than yours.")
             # Permission 6/0 is not for users, so They should be filtered
             elif cmd[-1] in ['6', '0']:
@@ -39,11 +51,11 @@ async def perm_cmd(cmd, message, sv_perm, modules, commands):
             # Resolve user's account by using guild.get_member method, getting
             # mentioned users, add them to sv_perm thing and dump it.
             userlist = [
-                message.guild.get_member(int(userid))
-                for userid in cmd[3:-1]
-                if not (userid.startswith("<@!") or 
-                message.guild.get_member(int(userid)) == None)
-            ] + message.mentions
+                           message.guild.get_member(int(userid))
+                           for userid in cmd[3:-1]
+                           if not (userid.startswith("<@!") or
+                                   message.guild.get_member(int(userid)) == None)
+                       ] + message.mentions
             # This will filter users who is having a higher/same permission than
             # the executor of this command.
             userlist = [
@@ -80,7 +92,7 @@ async def perm_cmd(cmd, message, sv_perm, modules, commands):
         elif cmd[2] == "cmd":
             # This will check if user has a proper permission to set the
             # permission.
-            if perm > int(cmd[-1]) and not cmd[-1] == '0': 
+            if perm > int(cmd[-1]) and not cmd[-1] == '0':
                 raise PermissionError("You can't set permission that is higher than yours.")
             # Permission 6/9 is not for commands, so They should be filtered
             elif cmd[-1] in ['6', '9']:
@@ -89,11 +101,11 @@ async def perm_cmd(cmd, message, sv_perm, modules, commands):
             # This will filter the commands that has higher permission compared
             # to executor or just disabled
             cmdlist = [cmdname for cmdname in cmdlist
-                if perm <= await Bot.get_module_perm(
+                       if perm <= await Bot.get_module_perm(
                     modules[cmdname], message.guild, sv_perm) or
-                    await Bot.get_module_perm(
-                        modules[cmdname], message.guild, sv_perm) == 0
-                ]
+                       await Bot.get_module_perm(
+                           modules[cmdname], message.guild, sv_perm) == 0
+                       ]
             if not cmdlist:
                 raise ValueError("No command was specified, or commands are having a higher permission than yours.")
             # It will cause error if the dict wasn't defined before
@@ -114,11 +126,11 @@ async def perm_cmd(cmd, message, sv_perm, modules, commands):
     elif cmd[1] == "get":
         if cmd[2] == "user":
             userlist = [
-                message.guild.get_member(int(userid))
-                for userid in cmd[3:]
-                if not (userid.startswith("<@!") or 
-                message.guild.get_member(int(userid)) == None)
-            ] + message.mentions
+                           message.guild.get_member(int(userid))
+                           for userid in cmd[3:]
+                           if not (userid.startswith("<@!") or
+                                   message.guild.get_member(int(userid)) == None)
+                       ] + message.mentions
             if not userlist:
                 raise ValueError("No user was specified.")
             rtnlist = []
@@ -143,4 +155,8 @@ async def perm_cmd(cmd, message, sv_perm, modules, commands):
     elif cmd[1] == "help":
         return HELP, sv_perm
     print(cmd)
-    raise SyntaxError("Usage:\n`perm [get/set] [user/cmd] [list of user/commands to set permission] [0~5]`\nCheck `perm help` for more info.")
+    raise SyntaxError(
+        "Usage:\n"
+        "`perm [get/set] [user/cmd] [list of user/commands to set permission] [0~5]`\n"
+        "Check `perm help` for more info."
+    )

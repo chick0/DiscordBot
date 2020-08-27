@@ -5,6 +5,7 @@ Send the message under the name of the bot.
 Usage: echo [message]\
 """
 
+
 async def main(message, **kwargs):
     cmd = message.content.split()
     if len(cmd) == 1:
